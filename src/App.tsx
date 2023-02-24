@@ -1,5 +1,6 @@
 import { Route, Routes } from 'react-router-dom';
 import './App.css';
+import { PrivateRoute } from './app/guards/PrivateRoute';
 import { DefaultLayout } from './app/layouts/DefaultLayout';
 import { routes } from './routes';
 
@@ -9,7 +10,13 @@ function App() {
       const { path, element: Element, childrens, meta, ...rest } = route;
       const props = {
         ...rest,
-        element: <Element />
+        element: route.meta.middleware.includes('auth') ? (
+          <PrivateRoute>
+            <Element />
+          </PrivateRoute>
+        ) : (
+          <Element />
+        )
       };
       const Layout = route.layout || DefaultLayout;
 
