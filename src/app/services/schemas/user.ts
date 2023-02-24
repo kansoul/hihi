@@ -7,3 +7,16 @@ export const LOGIN_USER = gql`
     }
   }
 `;
+
+export const GET_USER = gql`
+  query GetUser {
+    getUser {
+      uid
+      username
+      password
+      firstName
+      lastName
+      token
+    }
+  }
+`;

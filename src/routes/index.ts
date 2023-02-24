@@ -1,7 +1,9 @@
 import { ROUTES } from '../app/config/routes';
 import { Counter } from '../app/container/Counter';
 import Message from '../app/container/Message';
+import { NotFoundPage } from '../app/container/NotFoundPage';
 import TestRedux from '../app/container/TestRedux';
+import { BlankLayout } from '../app/layouts/BlankLayout';
 import LoginScreen from '../app/layouts/LoginScreen';
 
 const routes = [
@@ -20,8 +22,9 @@ const routes = [
     }
   },
   {
-    path: ROUTES.LOGIN,
+    path: ROUTES.AUTH.LOGIN,
     element: LoginScreen,
+    layout: BlankLayout,
     meta: {
       middleware: []
     }
@@ -31,6 +34,21 @@ const routes = [
     element: Message,
     meta: {
       middleware: []
+    }
+  },
+  {
+    path: '*',
+    element: NotFoundPage,
+    layout: BlankLayout,
+    meta: {
+      middleware: ['auth']
+    }
+  },
+  {
+    path: ROUTES.HOME,
+    element: Counter,
+    meta: {
+      middleware: ['auth']
     }
   }
 ];

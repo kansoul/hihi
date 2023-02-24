@@ -6,6 +6,8 @@ import App from './App';
 import { client } from './app/services/api';
 import { store } from './app/store';
 import './index.css';
+import 'react-toastify/dist/ReactToastify.css';
+import { ToastContainer } from 'react-toastify';
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
   <BrowserRouter>
@@ -13,6 +15,7 @@ ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
       <ApolloProvider client={client}>
         <App />
       </ApolloProvider>
+      <ToastContainer autoClose={5000} hideProgressBar />
     </Provider>
   </BrowserRouter>
 );

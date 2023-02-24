@@ -1,18 +1,10 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { getSavedState, saveState } from '../../../utils/helper';
 import { AUTHENTICATE_TOKEN_KEY, AUTHENTICATE_USER_KEY } from '../../config';
 import { RootState } from '../../store';
 
 // Define a type for the slice state
-function getSavedState(key: string) {
-  if (key) {
-    return JSON.parse(localStorage.getItem(key) || '{}');
-  }
-  return '';
-}
 
-function saveState(key: any, value: any) {
-  localStorage.setItem(key, JSON.stringify(value));
-}
 // Define the initial state using that type
 export interface AuthState {
   currentUser: any;
@@ -23,7 +15,7 @@ export interface AuthState {
 const resolveCurrentUserFromStorage = () => {
   // _location: api|localStorage
   const user: any = getSavedState(AUTHENTICATE_USER_KEY);
-  user.location = 'localStorage';
+  if (user) user.location = 'localStorage';
   return user;
 };
 
@@ -41,11 +33,11 @@ export const authSlice = createSlice({
     // Use the PayloadAction type to declare the contents of `action.payload`
     setCurrentUser: (state, action: PayloadAction<any>) => {
       state.currentUser = action.payload;
-      saveState('auth.currentUser', action.payload);
+      saveState(AUTHENTICATE_USER_KEY, action.payload);
     },
     setAccessToken: (state, action: PayloadAction<any>) => {
       state.accessToken = action.payload;
-      saveState('auth.accessToken', action.payload);
+      saveState(AUTHENTICATE_TOKEN_KEY, action.payload);
     },
     setIsAuthenticated: (state, action: PayloadAction<boolean>) => {
       state.isAuthenticated = action.payload;

@@ -9,7 +9,6 @@ export function DefaultLayout({ meta }: Props) {
   return (
     <>
       <main className={`${mainClass ? mainClass : ''}`}>
-        <p>Hellooooo</p>
         <Outlet />
       </main>
     </>

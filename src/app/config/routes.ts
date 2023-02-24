@@ -1,6 +1,9 @@
 export const ROUTES = {
+  HOME: '/',
   COUNTER: '/counter',
   TEST_REDUX: '/test-redux',
-  LOGIN: '/login',
+  AUTH: {
+    LOGIN: '/login'
+  },
   MESSAGE: '/message'
 };
