@@ -33,7 +33,7 @@ const routes = [
     path: ROUTES.MESSAGE,
     element: Message,
     meta: {
-      middleware: []
+      middleware: ['auth']
     }
   },
   {
@@ -46,7 +46,7 @@ const routes = [
   },
   {
     path: ROUTES.HOME,
-    element: Counter,
+    element: Message,
     meta: {
       middleware: ['auth']
     }

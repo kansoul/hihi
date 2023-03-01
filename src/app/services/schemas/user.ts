@@ -13,10 +13,8 @@ export const GET_USER = gql`
     getUser {
       uid
       username
-      password
       firstName
       lastName
-      token
     }
   }
 `;

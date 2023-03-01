@@ -1,10 +1,12 @@
-import { useQuery } from '@apollo/client';
+import { useLazyQuery } from '@apollo/client';
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
+import { getSavedState, goodEmptyCheck } from '../../../utils/helper';
 import { LoadingOverlay } from '../../components/LoadingOverlay/LoadingOverlay';
+import { AUTHENTICATE_TOKEN_KEY, AUTHENTICATE_USER_KEY } from '../../config';
 import { ROUTES } from '../../config/routes';
 import {
-  selectAccessToken,
   selectIsAuthenticated,
   setAccessToken,
   setCurrentUser,
@@ -16,31 +18,43 @@ import { GET_USER } from '../../services/schemas/user';
 export function PrivateRoute(props: any) {
   const navigate = useNavigate();
   const { children } = props;
-  const accessToken = useAppSelector(selectAccessToken);
+  const token = getSavedState(AUTHENTICATE_TOKEN_KEY);
+
   const isAuthenticated = useAppSelector(selectIsAuthenticated);
   const dispatch = useAppDispatch();
+  const [getUser, { loading, error, data }] = useLazyQuery(GET_USER);
 
-  async function init() {
+  const checkUser = () => {
     // eslint-disable-next-line
-    if (!accessToken) {
+    if (goodEmptyCheck(token)) {
       return navigate(ROUTES.AUTH.LOGIN);
     }
-    try {
-      const user = useQuery(GET_USER);
-      dispatch(setCurrentUser(user.data));
-      dispatch(setIsAuthenticated(true));
-    } catch (error: any) {
-      dispatch(setCurrentUser(''));
-      dispatch(setAccessToken(''));
+    getUser();
+  };
+
+  useEffect(() => {
+    checkUser();
+  }, []);
+
+  useEffect(() => {
+    if (error) {
+      toast.error(
+        error.message === 'TokenExpiredError: jwt expired'
+          ? 'Hết hạn đăng nhập, mời bạn đăng nhập lại'
+          : 'Lỗi đăng nhập'
+      );
+      localStorage.removeItem(AUTHENTICATE_TOKEN_KEY);
+      localStorage.removeItem(AUTHENTICATE_USER_KEY);
+
       dispatch(setIsAuthenticated(false));
       return navigate(ROUTES.AUTH.LOGIN);
     }
-  }
+    if (data) {
+      dispatch(setCurrentUser(data));
+      dispatch(setIsAuthenticated(true));
+    }
+  }, [error, data]);
 
-  useEffect(() => {
-    init();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
   return !isAuthenticated ? (
     <section className="flex items-center justify-center h-screen">
       <LoadingOverlay />
