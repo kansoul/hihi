@@ -1,3 +1,4 @@
+import { useEffect, useRef } from 'react';
 import ChatCard from './component/ChatCard';
 import './index.css';
 
@@ -8,6 +9,13 @@ interface ChatProps {
 
 export default function Chat(props: ChatProps) {
   const { openSettingRoom, setOpenSettingRoom } = props;
+  const messagesEndRef = useRef<any>(null);
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ alignToTop: false });
+  };
+  useEffect(() => {
+    scrollToBottom();
+  }, []);
   return (
     <div className="flex">
       <div
@@ -16,7 +24,7 @@ export default function Chat(props: ChatProps) {
         } `}>
         <div className="flex sm:items-center justify-between py-[14px] border-b-2 border-gray-200">
           <div className="relative flex items-center space-x-4">
-            <img className="w-10 h-10 rounded-full" src="" alt="" />
+            <img className="w-10 h-10 rounded-full" src="/images/anhaoxanh.jpeg" alt="" />
             <div className="font-medium dark:text-white">
               <div>Jese Leos</div>
               <div className="text-sm text-gray-500 dark:text-gray-400">Joined in August 2014</div>
@@ -81,6 +89,7 @@ export default function Chat(props: ChatProps) {
           id="messages"
           className="flex flex-col space-y-4 p-3 overflow-y-auto scrollbar-thumb-blue scrollbar-thumb-rounded scrollbar-track-blue-lighter scrollbar-w-2 scrolling-touch h-full">
           <ChatCard />
+          <div ref={messagesEndRef} />
         </div>
 
         <form>
@@ -191,7 +200,7 @@ export default function Chat(props: ChatProps) {
             <div className="flex flex-col items-center">
               <img
                 className="w-24 h-24 mb-3 rounded-full shadow-lg"
-                src="/docs/images/people/profile-picture-3.jpg"
+                src="/images/anhaoxanh.jpeg"
                 alt="Bonnie image"
               />
               <h5 className="mb-1 text-xl font-medium text-gray-900 dark:text-white">

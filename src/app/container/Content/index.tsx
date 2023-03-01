@@ -1,6 +1,8 @@
+import { changeToArr } from '../../../utils/helper';
+
 export default function Content() {
   return (
-    <div className="pt-16 px-2">
+    <div className="px-2 pb-6 flex flex-col h-screen border-r border-gray-200 sm:translate-x-0 dark:bg-gray-800 dark:border-gray-700 px-2 pt-16">
       <div className="flex sm:items-center justify-between pb-4">
         <div className="text-2xl font-bold px-2 space-x-4 items-center justify-center ">
           <p>Chat</p>
@@ -70,45 +72,41 @@ export default function Content() {
           />
         </div>
       </form>
-      <ul role="list" className="max-w-sm divide-y divide-gray-200 dark:divide-gray-700">
-        <li className="py-3 sm:py-4">
-          <div className="flex items-center space-x-3">
-            <div className="flex-shrink-0">
-              <img className="w-8 h-8 rounded-full" src="" alt="Neil image" />
+      <ul
+        role="list"
+        className="max-w-sm divide-y divide-gray-200 dark:divide-gray-700 overflow-y-scroll h-[100%]">
+        {changeToArr(15).map((val, index) => (
+          <li className="py-3 sm:py-4" key={val}>
+            <div className="flex items-center space-x-3">
+              <div className="flex-shrink-0">
+                <img
+                  className="w-8 h-8 rounded-full"
+                  src="/images/anhaoxanh.jpeg"
+                  alt="Neil image"
+                />
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className="text-sm font-semibold text-gray-900 truncate dark:text-white">
+                  Neil Sims
+                </p>
+                <p className="text-sm text-gray-500 truncate dark:text-gray-400">
+                  email@flowbite.com
+                </p>
+              </div>
+              {index % 2 === 0 ? (
+                <span className="inline-flex items-center bg-red-100 text-red-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded-full dark:bg-red-900 dark:text-red-300">
+                  <span className="w-2 h-2 mr-1 bg-red-500 rounded-full"></span>
+                  Unavailable
+                </span>
+              ) : (
+                <span className="inline-flex items-center bg-green-100 text-green-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded-full dark:bg-green-900 dark:text-green-300">
+                  <span className="w-2 h-2 mr-1 bg-green-500 rounded-full"></span>
+                  Available
+                </span>
+              )}
             </div>
-            <div className="flex-1 min-w-0">
-              <p className="text-sm font-semibold text-gray-900 truncate dark:text-white">
-                Neil Sims
-              </p>
-              <p className="text-sm text-gray-500 truncate dark:text-gray-400">
-                email@flowbite.com
-              </p>
-            </div>
-            <span className="inline-flex items-center bg-green-100 text-green-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded-full dark:bg-green-900 dark:text-green-300">
-              <span className="w-2 h-2 mr-1 bg-green-500 rounded-full"></span>
-              Available
-            </span>
-          </div>
-        </li>
-        <li className="py-3 sm:py-4">
-          <div className="flex items-center space-x-3">
-            <div className="flex-shrink-0">
-              <img className="w-8 h-8 rounded-full" src="" alt="Neil image" />
-            </div>
-            <div className="flex-1 min-w-0">
-              <p className="text-sm font-semibold text-gray-900 truncate dark:text-white">
-                Bonnie Green
-              </p>
-              <p className="text-sm text-gray-500 truncate dark:text-gray-400">
-                email@flowbite.com
-              </p>
-            </div>
-            <span className="inline-flex items-center bg-red-100 text-red-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded-full dark:bg-red-900 dark:text-red-300">
-              <span className="w-2 h-2 mr-1 bg-red-500 rounded-full"></span>
-              Unavailable
-            </span>
-          </div>
-        </li>
+          </li>
+        ))}
       </ul>
     </div>
   );

@@ -9,11 +9,11 @@ export default function Message() {
   return (
     <>
       <Header />
-      <div className="flex flex-row h-screen ">
+      <div className="flex flex-row max-h-screen">
         <div className="basis-[10%]">
           <Sidebar />
         </div>
-        <div className="basis-[21%] border-r border-gray-200 sm:translate-x-0 dark:bg-gray-800 dark:border-gray-700 px-2">
+        <div className="basis-[21%]">
           <Content />
         </div>
         <div className="basis-[69%]">

@@ -43,7 +43,11 @@ export default function Header() {
                   aria-expanded="false"
                   data-dropdown-toggle="dropdown-user">
                   <span className="sr-only">Open user menu</span>
-                  <img className="w-8 h-8 rounded-full" src="" alt="user photo" />
+                  <img
+                    className="w-8 h-8 rounded-full"
+                    src="/images/anhaoxanh.jpeg"
+                    alt="user photo"
+                  />
                 </button>
               </div>
               <div
