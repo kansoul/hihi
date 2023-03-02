@@ -2,7 +2,7 @@ import { changeToArr } from '../../../utils/helper';
 
 export default function Content() {
   return (
-    <div className="px-2 pb-6 flex flex-col h-screen border-r border-gray-200 sm:translate-x-0 dark:bg-gray-800 dark:border-gray-700 px-2 pt-16">
+    <div className="pb-6 flex flex-col h-screen border-r border-gray-200 sm:translate-x-0 dark:bg-gray-800 dark:border-gray-700 px-2 pt-16">
       <div className="flex sm:items-center justify-between pb-4">
         <div className="text-2xl font-bold px-2 space-x-4 items-center justify-center ">
           <p>Chat</p>

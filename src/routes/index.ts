@@ -1,6 +1,6 @@
 import { ROUTES } from '../app/config/routes';
 import { Counter } from '../app/container/Counter';
-import Message from '../app/container/Message';
+import Home from '../app/container/Home';
 import { NotFoundPage } from '../app/container/NotFoundPage';
 import TestRedux from '../app/container/TestRedux';
 import { BlankLayout } from '../app/layouts/BlankLayout';
@@ -31,7 +31,7 @@ const routes = [
   },
   {
     path: ROUTES.MESSAGE,
-    element: Message,
+    element: Home,
     meta: {
       middleware: ['auth']
     }
@@ -46,7 +46,7 @@ const routes = [
   },
   {
     path: ROUTES.HOME,
-    element: Message,
+    element: Home,
     meta: {
       middleware: ['auth']
     }

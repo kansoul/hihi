@@ -1,22 +1,72 @@
+import { useMutation } from '@apollo/client';
+import { useEffect } from 'react';
+import { useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
+import { AUTHENTICATE_TOKEN_KEY, AUTHENTICATE_USER_KEY } from '../../config';
+import { TAB_SIDE_BAR } from '../../config/app';
+import { ROUTES } from '../../config/routes';
+import { selectCurrentUser, setIsAuthenticated } from '../../features/auth/authSlice';
+import { selectTabSideBar, setTabSideBar } from '../../features/tabSideBar/tabSideBarSlice';
+import { useAppDispatch, useAppSelector } from '../../hooks';
+import { LOGOUT_USER } from '../../services/schemas/user';
 import './index.css';
 
 export default function Sidebar() {
+  const dispatch = useAppDispatch();
+  const navigate = useNavigate();
+  const userDataStorage = useAppSelector(selectCurrentUser);
+  const tab = useAppSelector(selectTabSideBar);
+  console.log(tab);
+  const [logoutUser, { data, error }] = useMutation(LOGOUT_USER);
+  const logOut = async () => {
+    try {
+      if (!userDataStorage?.getUser?.uid) {
+        toast.error('User not found');
+        return;
+      }
+      await logoutUser({
+        variables: {
+          uid: userDataStorage.getUser.uid,
+          close: false
+        }
+      });
+    } catch (err: any) {
+      console.log(err);
+      toast.error(err.message);
+    }
+  };
+  useEffect(() => {
+    if (error) {
+      toast.error(error.message);
+      return;
+    }
+    if (data) {
+      localStorage.removeItem(AUTHENTICATE_TOKEN_KEY);
+      localStorage.removeItem(AUTHENTICATE_USER_KEY);
+      dispatch(setIsAuthenticated(false));
+      return navigate(ROUTES.AUTH.LOGIN);
+    }
+  }, [error, data]);
+  const styleOfSvg =
+    'flex-shrink-0 w-6 h-6 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white';
+  const styleTabSideBar =
+    'flex items-center p-2 text-base font-normal text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700';
   return (
     <aside
       id="logo-sidebar"
-      className="fixed top-0 left-0 z-40 w-[10%] h-screen pt-20 transition-transform -translate-x-full bg-white border-r border-gray-200 sm:translate-x-0 dark:bg-gray-800 dark:border-gray-700"
+      className="fixed top-0 left-0 z-40 w-[10%] h-screen pt-20 transition-transform -translate-x-full bg-white border-r border-gray-200 sm:translate-x-0 dark:bg-gray-800 dark:border-gray-700 cursor-pointer"
       aria-label="Sidebar">
       <div className="h-full px-3 pb-4 overflow-y-auto bg-white dark:bg-gray-800">
         <ul className="space-y-2">
           <li>
-            <a
-              href="#"
-              className="flex items-center p-2 text-base font-normal text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700">
+            <span
+              onClick={() => dispatch(setTabSideBar(TAB_SIDE_BAR.CHAT))}
+              className={`${styleTabSideBar} ${tab === TAB_SIDE_BAR.CHAT ? 'bg-gray-100' : ''}`}>
               <svg
                 version="1.1"
                 xmlns="http://www.w3.org/2000/svg"
-                width="1.5rem"
-                height="1.5rem"
+                className={styleOfSvg}
                 viewBox="0,0,256,256">
                 <g fillOpacity="0.50196" fill="#000000">
                   <g transform="scale(5.12,5.12)">
@@ -25,46 +75,137 @@ export default function Sidebar() {
                 </g>
               </svg>
               <span className="ml-3">Chat</span>
-            </a>
+            </span>
           </li>
           <li>
-            <a
-              href="#"
-              className="flex items-center p-2 text-base font-normal text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700">
+            <span
+              onClick={() => dispatch(setTabSideBar(TAB_SIDE_BAR.ROOM_CHAT))}
+              className={`${styleTabSideBar} ${
+                tab === TAB_SIDE_BAR.ROOM_CHAT ? 'bg-gray-100' : ''
+              }`}>
               <svg
                 aria-hidden="true"
-                className="flex-shrink-0 w-6 h-6 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
+                className={styleOfSvg}
                 fill="currentColor"
                 viewBox="0 0 20 20"
                 xmlns="http://www.w3.org/2000/svg">
                 <path d="M5 3a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2V5a2 2 0 00-2-2H5zM5 11a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2v-2a2 2 0 00-2-2H5zM11 5a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V5zM11 13a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path>
               </svg>
               <span className="flex-1 ml-3 whitespace-nowrap">Room Chat</span>
-            </a>
+            </span>
           </li>
           <li>
-            <a
-              href="#"
-              className="flex items-center p-2 text-base font-normal text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700">
+            <span
+              onClick={() => dispatch(setTabSideBar(TAB_SIDE_BAR.FRIEND))}
+              className={`${styleTabSideBar} ${tab === TAB_SIDE_BAR.FRIEND ? 'bg-gray-100' : ''}`}>
               <svg
-                aria-hidden="true"
-                className="flex-shrink-0 w-6 h-6 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
-                fill="currentColor"
-                viewBox="0 0 20 20"
-                xmlns="http://www.w3.org/2000/svg">
-                <path d="M8.707 7.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l2-2a1 1 0 00-1.414-1.414L11 7.586V3a1 1 0 10-2 0v4.586l-.293-.293z"></path>
-                <path d="M3 5a2 2 0 012-2h1a1 1 0 010 2H5v7h2l1 2h4l1-2h2V5h-1a1 1 0 110-2h1a2 2 0 012 2v10a2 2 0 01-2 2H5a2 2 0 01-2-2V5z"></path>
+                version="1.1"
+                xmlns="http://www.w3.org/2000/svg"
+                className={styleOfSvg}
+                viewBox="0,0,256,256">
+                <g fillOpacity="0.6" fill="#000000">
+                  <g transform="scale(5.12,5.12)">
+                    <path d="M19,2c-1.583,0 -2.89632,0.62994 -3.74609,1.58594c-0.84977,0.95599 -1.25195,2.19014 -1.25195,3.41211c0,1.22197 0.40218,2.45807 1.25195,3.41406c0.84977,0.956 2.16309,1.58594 3.74609,1.58594c1.583,0 2.89632,-0.62994 3.74609,-1.58594c0.84977,-0.95599 1.25195,-2.19209 1.25195,-3.41406c0,-1.22197 -0.40218,-2.45612 -1.25195,-3.41211c-0.84977,-0.95599 -2.16309,-1.58594 -3.74609,-1.58594zM30,2c-1.58333,0 -2.89811,0.62976 -3.74805,1.58594c-0.84994,0.95618 -1.25195,2.19184 -1.25195,3.41406c0,1.22222 0.40201,2.45788 1.25195,3.41406c0.84994,0.95618 2.16471,1.58594 3.74805,1.58594c1.58333,0 2.89811,-0.62976 3.74805,-1.58594c0.84994,-0.95618 1.25195,-2.19184 1.25195,-3.41406c0,-1.22222 -0.40201,-2.45788 -1.25195,-3.41406c-0.84994,-0.95618 -2.16471,-1.58594 -3.74805,-1.58594zM19,4c1.083,0 1.76873,0.37043 2.25195,0.91406c0.48323,0.54363 0.74609,1.30646 0.74609,2.08398c0,0.77753 -0.26287,1.54231 -0.74609,2.08594c-0.48323,0.54363 -1.16895,0.91406 -2.25195,0.91406c-1.083,0 -1.76873,-0.37043 -2.25195,-0.91406c-0.48323,-0.54363 -0.74609,-1.30841 -0.74609,-2.08594c0,-0.77753 0.26287,-1.54035 0.74609,-2.08398c0.48323,-0.54363 1.16895,-0.91406 2.25195,-0.91406zM30,4c1.08333,0 1.76856,0.37024 2.25195,0.91406c0.48339,0.54382 0.74805,1.30816 0.74805,2.08594c0,0.77778 -0.26465,1.54212 -0.74805,2.08594c-0.48339,0.54382 -1.16862,0.91406 -2.25195,0.91406c-1.08333,0 -1.76856,-0.37024 -2.25195,-0.91406c-0.48339,-0.54382 -0.74805,-1.30816 -0.74805,-2.08594c0,-0.77778 0.26465,-1.54212 0.74805,-2.08594c0.48339,-0.54382 1.16862,-0.91406 2.25195,-0.91406zM37.14453,11.00391c-0.57359,-0.02642 -1.12767,0.10899 -1.59766,0.37109v-0.00195c-0.03284,0.01537 -0.0822,0.03766 -0.14453,0.06641c-0.12466,0.05749 -0.30127,0.14023 -0.51562,0.23828c-0.42871,0.19611 -1.0077,0.4591 -1.625,0.74024c-1.2346,0.56226 -2.6239,1.19375 -3.28516,1.49414c-0.12995,0.05902 -0.26317,0.08789 -0.41016,0.08789h-14.94141c-0.00065,0 -0.0013,0 -0.00195,0c-1.25923,0.0014 -2.50657,0.63768 -3.16992,1.81055c-0.0268,0.04753 -0.04966,0.09718 -0.06836,0.14844l-1.99609,5.47656c-0.50672,0.98407 -0.51397,2.15628 -0.00195,3.14258l-0.03906,-0.08203l2.25195,5.50586c0.01172,0.02858 0.02475,0.05661 0.03906,0.08398c0.49636,0.95353 1.37751,1.58294 2.36133,1.81641v12.80469c0,1.92161 1.69976,3.29297 3.5,3.29297c1.03746,0 1.86174,-0.53292 2.5,-1.26172c0.63828,0.72913 1.46422,1.26172 2.50195,1.26172c0.94113,0 1.84815,-0.38141 2.50586,-1.01367c0.65659,0.63303 1.55802,1.01367 2.49219,1.01367c1.01474,0 1.98582,-0.44717 2.65039,-1.17187c0.57945,0.69599 1.36518,1.17188 2.34961,1.17188c1.80024,0 3.5,-1.37136 3.5,-3.29297v-12.81445c0.98366,-0.23271 1.86486,-0.85985 2.36133,-1.8125l0.02148,-0.04102l2.26953,-5.54687l-0.03906,0.08203c0.5128,-0.9878 0.50544,-2.16352 -0.00391,-3.14844l-1.83203,-5.02344c0.92507,-0.68989 1.43936,-1.91185 1.12695,-3.16016c-0.26748,-1.07303 -1.1052,-1.89998 -2.17969,-2.15625c-0.00065,0 -0.0013,0 -0.00195,0c-0.19294,-0.04589 -0.38693,-0.07323 -0.57812,-0.08203zM36.85742,13.00781c0.12187,-0.01744 0.25422,-0.01179 0.40234,0.02344c0.31751,0.07573 0.62461,0.38034 0.70313,0.69531c0.00065,0 0.0013,0 0.00195,0c0.13113,0.52398 -0.10075,0.92694 -0.4668,1.13867c0.08512,-0.04938 -0.05776,0.02841 -0.19336,0.09375c-0.1356,0.06534 -0.32379,0.15555 -0.54883,0.26172c-0.45009,0.21233 -1.04873,0.49278 -1.69727,0.79492c-1.29707,0.60428 -2.7892,1.29429 -3.68164,1.70703c-0.00065,0.00065 -0.0013,0.0013 -0.00195,0.00195c-0.39206,0.18212 -0.81954,0.27539 -1.25586,0.27539h-5.11914c-0.55226,0.00006 -0.99994,0.44774 -1,1v25.66016c0,0.00809 0.0019,0.01537 0.00195,0.02344c-0.00009,0.00781 -0.00009,0.01562 0,0.02344c0,0.64439 -0.75824,1.29297 -1.5,1.29297c-0.73233,0 -1.36618,-0.59741 -1.5,-1.41602v-12.58594c0.0051,-0.36064 -0.18438,-0.69608 -0.49587,-0.87789c-0.3115,-0.18181 -0.69676,-0.18181 -1.00825,0c-0.3115,0.18181 -0.50097,0.51725 -0.49587,0.87789v12.58203c-0.13214,0.82105 -0.76822,1.41992 -1.50195,1.41992c-0.74176,0 -1.5,-0.64858 -1.5,-1.29297v-23.70898c0.0037,-0.2703 -0.10218,-0.53059 -0.29351,-0.72155c-0.19133,-0.19097 -0.45182,-0.29634 -0.72212,-0.29212c-0.55152,0.00862 -0.99193,0.46214 -0.98437,1.01367v8.77344c-0.24189,-0.14443 -0.44682,-0.34887 -0.58203,-0.60547l-2.21875,-5.42773c-0.01113,-0.02789 -0.02351,-0.05526 -0.03711,-0.08203c-0.22628,-0.43589 -0.21771,-0.93156 0.02539,-1.35937c0.02766,-0.04872 0.05118,-0.09968 0.07031,-0.15234l1.95508,-5.35937c0.28023,-0.47812 0.84105,-0.78391 1.41211,-0.78516h14.94141c0.42301,0 0.84628,-0.0886 1.23633,-0.26562c0.66174,-0.30061 2.05342,-0.93336 3.28906,-1.49609c0.61782,-0.28137 1.19626,-0.54517 1.62695,-0.74219c0.21535,-0.09851 0.39318,-0.18106 0.52148,-0.24024c0.06415,-0.02959 0.11519,-0.05201 0.1543,-0.07031c0.0391,-0.0183 -0.0249,0.02051 0.12695,-0.06445v0.00195c0.10268,-0.05726 0.21407,-0.09779 0.33594,-0.11524zM36.98438,17.32227l1.78711,4.89844l0.04102,0.07227c0.2433,0.42816 0.25185,0.92315 0.02539,1.35938l-0.01953,0.04102l-2.23633,5.46484c-0.13513,0.25614 -0.3401,0.4614 -0.58203,0.60547v-8.76562c0.0037,-0.2703 -0.10218,-0.53059 -0.29351,-0.72155c-0.19133,-0.19097 -0.45182,-0.29634 -0.72212,-0.29212c-0.55152,0.00862 -0.99193,0.46214 -0.98437,1.01367v23.70898c0,0.64439 -0.75824,1.29297 -1.5,1.29297c-0.73234,0 -1.36619,-0.59739 -1.5,-1.41602v-12.58594c0.0051,-0.36064 -0.18438,-0.69608 -0.49587,-0.87789c-0.3115,-0.18181 -0.69676,-0.18181 -1.00825,0c-0.3115,0.18181 -0.50097,0.51725 -0.49587,0.87789v12.6543c-0.0005,0.01823 -0.0005,0.03646 0,0.05469c0,0.64589 -0.75772,1.29297 -1.5,1.29297c-0.74108,0 -1.49861,-0.62475 -1.5,-1.33789c0,-0.00066 0,-0.0013 0,-0.00195v-0.00391v-24.65625h4.11914c0.72368,0 1.43972,-0.15711 2.09766,-0.46289c0.89376,-0.41335 2.3862,-1.10365 3.68555,-1.70898c0.412,-0.19194 0.73388,-0.34272 1.08203,-0.50586z"></path>
+                  </g>
+                </g>
               </svg>
-              <span className="flex-1 ml-3 whitespace-nowrap">Inbox</span>
-            </a>
+              <span className="flex-1 ml-3 whitespace-nowrap">Friend</span>
+            </span>
           </li>
           <li>
-            <a
-              href="#"
-              className="flex items-center p-2 text-base font-normal text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700">
+            <span
+              onClick={() => dispatch(setTabSideBar(TAB_SIDE_BAR.FRIEND_LIST))}
+              className={`${styleTabSideBar} ${
+                tab === TAB_SIDE_BAR.FRIEND_LIST ? 'bg-gray-100' : ''
+              }`}>
+              <svg
+                version="1.1"
+                xmlns="http://www.w3.org/2000/svg"
+                className={styleOfSvg}
+                viewBox="0,0,256,256">
+                <g>
+                  <g transform="scale(0.54701,0.54701)">
+                    <rect
+                      x="41"
+                      y="7"
+                      width="386"
+                      height="454"
+                      fillOpacity="0"
+                      fill="#f9f9f9"></rect>
+                    <rect x="41" y="7" width="20" height="454" fill="#e0e0e0"></rect>
+                    <path
+                      d="M427,468h-386c-3.866,0 -7,-3.134 -7,-7v-454c0,-3.866 3.134,-7 7,-7h386c3.866,0 7,3.134 7,7v454c0,3.866 -3.134,7 -7,7zM48,454h372v-440h-372z"
+                      fill="#444b54"></path>
+                    <ellipse
+                      cx="138.404"
+                      cy="345.654"
+                      rx="29.219"
+                      ry="29.654"
+                      fillOpacity="0"
+                      fill="#f9f9f9"></ellipse>
+                    <path
+                      d="M128.184,345.654c0,-13.001 8.247,-24.04 19.719,-28.042c-2.979,-1.04 -6.173,-1.612 -9.5,-1.612c-16.138,0 -29.219,13.276 -29.219,29.654c0,16.378 13.082,29.654 29.219,29.654c3.327,0 6.521,-0.572 9.5,-1.612c-11.471,-4.003 -19.719,-15.042 -19.719,-28.042z"
+                      fill="#e0e0e0"></path>
+                    <path
+                      d="M170.185,363.217c2.827,-5.219 4.438,-11.204 4.438,-17.563c0,-20.211 -16.248,-36.653 -36.219,-36.653c-19.972,0 -36.22,16.442 -36.22,36.653c0,6.35 1.606,12.327 4.425,17.541c-10.563,9.1 -17.279,22.627 -17.279,37.723v21.082c0,3.866 3.134,7 7,7c3.866,0 7,-3.134 7,-7v-21.083c0,-10.74 4.717,-20.376 12.153,-26.906c6.248,5.182 14.231,8.297 22.921,8.297c8.685,0 16.663,-3.112 22.91,-8.289c7.437,6.53 12.164,16.157 12.164,26.898v21.083c0,3.866 3.134,7 7,7c3.866,0 7,-3.134 7,-7v-21.083c0,-15.095 -6.729,-28.605 -17.293,-37.7zM138.404,368.308c-12.252,0 -22.22,-10.163 -22.22,-22.654c0,-12.491 9.968,-22.654 22.22,-22.654c12.252,0 22.219,10.162 22.219,22.653c0,12.491 -9.967,22.655 -22.219,22.655z"
+                      fill="#444b54"></path>
+                    <path
+                      d="M371.67,404.462h-16.599c-3.866,0 -7,-3.134 -7,-7c0,-3.866 3.134,-7 7,-7h16.599c3.866,0 7,3.134 7,7c0,3.866 -3.134,7 -7,7z"
+                      fill="#444b54"></path>
+                    <path
+                      d="M320.466,404.462h-71.438c-3.866,0 -7,-3.134 -7,-7c0,-3.866 3.134,-7 7,-7h71.438c3.866,0 7,3.134 7,7c0,3.866 -3.134,7 -7,7z"
+                      fill="#444b54"></path>
+                    <path
+                      d="M371.67,347.538h-122.642c-3.866,0 -7,-3.134 -7,-7c0,-3.866 3.134,-7 7,-7h122.642c3.866,0 7,3.134 7,7c0,3.866 -3.134,7 -7,7z"
+                      fill="#444b54"></path>
+                    <path
+                      d="M170.137,228.189c2.812,-5.212 4.414,-11.188 4.414,-17.536c0,-20.211 -16.215,-36.653 -36.147,-36.653c-19.932,0 -36.147,16.442 -36.147,36.653c0,6.348 1.602,12.324 4.414,17.536c-10.536,9.104 -17.236,22.634 -17.236,37.728v21.083c0,3.866 3.134,7 7,7c3.866,0 7,-3.134 7,-7v-21.083c0,-10.734 4.699,-20.367 12.105,-26.898c6.234,5.177 14.197,8.289 22.865,8.289c8.668,0 16.63,-3.112 22.865,-8.289c7.406,6.532 12.105,16.164 12.105,26.898v21.083c0,3.866 3.134,7 7,7c3.866,0 7,-3.134 7,-7v-21.083c-0.002,-15.094 -6.702,-28.624 -17.238,-37.728z"
+                      fill="#444b54"></path>
+                    <path
+                      d="M371.67,269.462h-16.599c-3.866,0 -7,-3.134 -7,-7c0,-3.866 3.134,-7 7,-7h16.599c3.866,0 7,3.134 7,7c0,3.866 -3.134,7 -7,7z"
+                      fill="#444b54"></path>
+                    <path
+                      d="M320.466,269.462h-71.438c-3.866,0 -7,-3.134 -7,-7c0,-3.866 3.134,-7 7,-7h71.438c3.866,0 7,3.134 7,7c0,3.866 -3.134,7 -7,7z"
+                      fill="#444b54"></path>
+                    <path
+                      d="M371.67,212.538h-122.642c-3.866,0 -7,-3.134 -7,-7c0,-3.866 3.134,-7 7,-7h122.642c3.866,0 7,3.134 7,7c0,3.866 -3.134,7 -7,7z"
+                      fill="#444b54"></path>
+                    <ellipse
+                      cx="138.404"
+                      cy="75.654"
+                      rx="29.219"
+                      ry="29.654"
+                      fill="#64d1f2"></ellipse>
+                    <path
+                      d="M128.184,75.654c0,-13.001 8.247,-24.04 19.719,-28.042c-2.979,-1.04 -6.173,-1.612 -9.5,-1.612c-16.138,0 -29.219,13.276 -29.219,29.654c0,16.378 13.082,29.654 29.219,29.654c3.327,0 6.521,-0.572 9.5,-1.612c-11.471,-4.003 -19.719,-15.042 -19.719,-28.042z"
+                      fill="#57cae5"></path>
+                    <path
+                      d="M170.189,93.208c2.825,-5.217 4.434,-11.199 4.434,-17.555c0,-20.211 -16.248,-36.653 -36.219,-36.653c-19.972,0 -36.22,16.442 -36.22,36.653c0,6.351 1.606,12.329 4.427,17.542c-10.564,9.098 -17.281,22.625 -17.281,37.721v21.084c0,3.866 3.134,7 7,7c3.866,0 7,-3.134 7,-7v-21.083c0,-10.742 4.727,-20.368 12.167,-26.895c6.246,5.175 14.223,8.286 22.906,8.286c8.687,0 16.667,-3.113 22.914,-8.292c7.437,6.53 12.16,16.161 12.16,26.901v21.083c0,3.866 3.134,7 7,7c3.866,0 7,-3.134 7,-7v-21.083c0.001,-15.095 -6.726,-28.609 -17.288,-37.709zM116.184,75.653c0,-12.491 9.968,-22.653 22.22,-22.653c12.252,0 22.219,10.162 22.219,22.653c0,12.491 -9.967,22.654 -22.219,22.654c-12.252,0 -22.22,-10.162 -22.22,-22.654z"
+                      fill="#444b54"></path>
+                    <g>
+                      <path
+                        d="M371.67,134.462h-16.599c-3.866,0 -7,-3.134 -7,-7c0,-3.866 3.134,-7 7,-7h16.599c3.866,0 7,3.134 7,7c0,3.866 -3.134,7 -7,7z"
+                        fill="#57cae5"></path>
+                      <path
+                        d="M320.466,134.462h-71.438c-3.866,0 -7,-3.134 -7,-7c0,-3.866 3.134,-7 7,-7h71.438c3.866,0 7,3.134 7,7c0,3.866 -3.134,7 -7,7z"
+                        fill="#444b54"></path>
+                      <path
+                        d="M371.67,77.538h-122.642c-3.866,0 -7,-3.134 -7,-7c0,-3.866 3.134,-7 7,-7h122.642c3.866,0 7,3.134 7,7c0,3.866 -3.134,7 -7,7z"
+                        fill="#444b54"></path>
+                    </g>
+                  </g>
+                </g>
+              </svg>
+              <span className="flex-1 ml-3 whitespace-nowrap">Friend List</span>
+            </span>
+          </li>
+          <li>
+            <span
+              onClick={() => dispatch(setTabSideBar(TAB_SIDE_BAR.PROFILE))}
+              className={`${styleTabSideBar} ${tab === TAB_SIDE_BAR.PROFILE ? 'bg-gray-100' : ''}`}>
               <svg
                 aria-hidden="true"
-                className="flex-shrink-0 w-6 h-6 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
+                className={styleOfSvg}
                 fill="currentColor"
                 viewBox="0 0 20 20"
                 xmlns="http://www.w3.org/2000/svg">
@@ -74,16 +215,13 @@ export default function Sidebar() {
                   clipRule="evenodd"></path>
               </svg>
               <span className="flex-1 ml-3 whitespace-nowrap">Profile</span>
-            </a>
+            </span>
           </li>
-
           <li>
-            <a
-              href="#"
-              className="flex items-center p-2 text-base font-normal text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700">
+            <span onClick={logOut} className={styleTabSideBar}>
               <svg
                 aria-hidden="true"
-                className="flex-shrink-0 w-6 h-6 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
+                className={styleOfSvg}
                 fill="currentColor"
                 viewBox="0 0 20 20"
                 xmlns="http://www.w3.org/2000/svg">
@@ -93,7 +231,7 @@ export default function Sidebar() {
                   clipRule="evenodd"></path>
               </svg>
               <span className="flex-1 ml-3 whitespace-nowrap">Log Out</span>
-            </a>
+            </span>
           </li>
         </ul>
       </div>

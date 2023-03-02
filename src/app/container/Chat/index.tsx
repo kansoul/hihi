@@ -1,14 +1,10 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import ChatCard from './component/ChatCard';
 import './index.css';
 
-interface ChatProps {
-  openSettingRoom: boolean;
-  setOpenSettingRoom: (value: boolean) => void;
-}
+export default function Chat() {
+  const [openSettingRoom, setOpenSettingRoom] = useState<boolean>(false);
 
-export default function Chat(props: ChatProps) {
-  const { openSettingRoom, setOpenSettingRoom } = props;
   const messagesEndRef = useRef<any>(null);
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ alignToTop: false });

@@ -1,11 +1,9 @@
-import { useState } from 'react';
 import Chat from '../Chat';
 import Content from '../Content';
 import Header from '../Header';
 import Sidebar from '../Sidebar';
 
-export default function Message() {
-  const [openSettingRoom, setOpenSettingRoom] = useState<boolean>(false);
+export default function Home() {
   return (
     <>
       <Header />
@@ -17,7 +15,7 @@ export default function Message() {
           <Content />
         </div>
         <div className="basis-[69%]">
-          <Chat openSettingRoom={openSettingRoom} setOpenSettingRoom={setOpenSettingRoom} />
+          <Chat />
         </div>
       </div>
     </>
