@@ -1,6 +1,6 @@
 import { changeToArr } from '../../../utils/helper';
 
-export default function Content() {
+export default function ChatList() {
   return (
     <div className="pb-6 flex flex-col h-screen border-r border-gray-200 sm:translate-x-0 dark:bg-gray-800 dark:border-gray-700 px-2 pt-16">
       <div className="flex sm:items-center justify-between pb-4">

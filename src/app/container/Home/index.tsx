@@ -1,5 +1,5 @@
 import Chat from '../Chat';
-import Content from '../Content';
+import ChatList from '../ChatList';
 import Header from '../Header';
 import Sidebar from '../Sidebar';
 
@@ -12,7 +12,7 @@ export default function Home() {
           <Sidebar />
         </div>
         <div className="basis-[21%]">
-          <Content />
+          <ChatList />
         </div>
         <div className="basis-[69%]">
           <Chat />

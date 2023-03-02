@@ -1,3 +1,10 @@
 export function NotFoundPage() {
-  return <section className="text-center pt-5">アドレスをご確認の上、再度お試しください</section>;
+  return (
+    <section className="text-center pt-5">
+      Trang này không tồn tại, quay lại trang chủ{' '}
+      <a href="/" className="text-red-400">
+        tại đây
+      </a>
+    </section>
+  );
 }
