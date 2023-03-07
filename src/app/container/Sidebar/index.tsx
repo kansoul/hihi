@@ -1,15 +1,14 @@
 import { useMutation } from '@apollo/client';
 import { useEffect } from 'react';
-import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
-import { AUTHENTICATE_TOKEN_KEY, AUTHENTICATE_USER_KEY } from '../../config';
-import { TAB_SIDE_BAR } from '../../config/app';
-import { ROUTES } from '../../config/routes';
-import { selectCurrentUser, setIsAuthenticated } from '../../features/auth/authSlice';
-import { selectTabSideBar, setTabSideBar } from '../../features/tabSideBar/tabSideBarSlice';
-import { useAppDispatch, useAppSelector } from '../../hooks';
-import { LOGOUT_USER } from '../../services/schemas/user';
+import { AUTHENTICATE_TOKEN_KEY, AUTHENTICATE_USER_KEY } from '@/app/config';
+import { TAB_SIDE_BAR } from '@/app/config/app';
+import { ROUTES } from '@/app/config/routes';
+import { selectCurrentUser, setIsAuthenticated } from '@/app/features/auth/authSlice';
+import { selectTabSideBar, setTabSideBar } from '@/app/features/tabSideBar/tabSideBarSlice';
+import { useAppDispatch, useAppSelector } from '@/app/hooks';
+import { LOGOUT_USER } from '@/app/services/schemas/user';
 import './index.css';
 
 export default function Sidebar() {
@@ -17,7 +16,6 @@ export default function Sidebar() {
   const navigate = useNavigate();
   const userDataStorage = useAppSelector(selectCurrentUser);
   const tab = useAppSelector(selectTabSideBar);
-  console.log(tab);
   const [logoutUser, { data, error }] = useMutation(LOGOUT_USER);
   const logOut = async () => {
     try {
@@ -51,11 +49,11 @@ export default function Sidebar() {
   const styleOfSvg =
     'flex-shrink-0 w-6 h-6 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white';
   const styleTabSideBar =
-    'flex items-center p-2 text-base font-normal text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700';
+    'flex items-center px-2 py-3 mb-2 text-base font-normal text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700';
   return (
     <aside
       id="logo-sidebar"
-      className="fixed top-0 left-0 z-40 w-[10%] h-screen pt-20 transition-transform -translate-x-full bg-white border-r border-gray-200 sm:translate-x-0 dark:bg-gray-800 dark:border-gray-700 cursor-pointer"
+      className="fixed top-0 left-0 z-40 w-[15%] h-screen pt-20 transition-transform -translate-x-full bg-white border-r border-gray-200 sm:translate-x-0 dark:bg-gray-800 dark:border-gray-700 cursor-pointer"
       aria-label="Sidebar">
       <div className="h-full px-3 pb-4 overflow-y-auto bg-white dark:bg-gray-800">
         <ul className="space-y-2">
@@ -91,7 +89,7 @@ export default function Sidebar() {
                 xmlns="http://www.w3.org/2000/svg">
                 <path d="M5 3a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2V5a2 2 0 00-2-2H5zM5 11a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2v-2a2 2 0 00-2-2H5zM11 5a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V5zM11 13a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path>
               </svg>
-              <span className="flex-1 ml-3 whitespace-nowrap">Room Chat</span>
+              <span className="flex-1 ml-3 whitespace-nowrap">Phòng Chat</span>
             </span>
           </li>
           <li>
@@ -109,14 +107,14 @@ export default function Sidebar() {
                   </g>
                 </g>
               </svg>
-              <span className="flex-1 ml-3 whitespace-nowrap">Friend</span>
+              <span className="flex-1 ml-3 whitespace-nowrap">Bạn bè</span>
             </span>
           </li>
           <li>
             <span
-              onClick={() => dispatch(setTabSideBar(TAB_SIDE_BAR.FRIEND_LIST))}
+              onClick={() => dispatch(setTabSideBar(TAB_SIDE_BAR.EVERYONE))}
               className={`${styleTabSideBar} ${
-                tab === TAB_SIDE_BAR.FRIEND_LIST ? 'bg-gray-100' : ''
+                tab === TAB_SIDE_BAR.EVERYONE ? 'bg-gray-100' : ''
               }`}>
               <svg
                 version="1.1"
@@ -196,7 +194,23 @@ export default function Sidebar() {
                   </g>
                 </g>
               </svg>
-              <span className="flex-1 ml-3 whitespace-nowrap">Friend List</span>
+              <span className="flex-1 ml-3 whitespace-nowrap">Mọi người</span>
+            </span>
+          </li>
+          <li>
+            <span
+              onClick={() => dispatch(setTabSideBar(TAB_SIDE_BAR.FRIEND_REQUESTS))}
+              className={`${styleTabSideBar} ${
+                tab === TAB_SIDE_BAR.FRIEND_REQUESTS ? 'bg-gray-100' : ''
+              }`}>
+              <svg version="1.1" className={styleOfSvg} viewBox="0,0,256,256">
+                <g fillOpacity="0.65882" fill="#000000">
+                  <g transform="scale(8,8)">
+                    <path d="M14.19922,0.96484c-2.70373,-0.07642 -5.20955,1.41167 -6.43635,3.82227c-1.2268,2.41059 -0.95503,5.31227 0.69807,7.45312c-4.55402,2.14482 -7.4605,6.72595 -7.46094,11.75977v2c0,2.76142 2.23858,5 5,5h17c4.41516,0.09193 8.0701,-3.41031 8.16657,-7.82538c0.09647,-4.41506 -3.402,-8.07361 -7.81696,-8.17462c-1.09042,-1.14556 -2.38204,-2.08102 -3.81055,-2.75977c1.60923,-2.08399 1.91293,-4.89472 0.78597,-7.27435c-1.12695,-2.37963 -3.4939,-3.92559 -6.12582,-4.00104zM14,3c2.76142,0 5,2.23858 5,5c0,2.76142 -2.23858,5 -5,5c-2.76142,0 -5,-2.23858 -5,-5c0,-2.76142 2.23858,-5 5,-5zM10,13.75977c2.38838,1.64149 5.54131,1.64149 7.92969,0c0.99329,0.38245 1.92356,0.91178 2.75977,1.57031c-2.78289,0.83354 -4.89521,3.11016 -5.51836,5.94758c-0.62314,2.83742 0.34084,5.78965 2.51836,7.71258l-11.68945,0.00977c-1.65685,0 -3,-1.34315 -3,-3v-2c0.00277,-4.52897 2.78108,-8.59334 7,-10.24023zM22.75,17.00586c1.63314,-0.06811 3.22338,0.53303 4.40308,1.66444c1.1797,1.13141 1.84675,2.69514 1.84692,4.3297c0,3.31371 -2.68629,6 -6,6c-3.25926,-0.00798 -5.91609,-2.61638 -5.98401,-5.87495c-0.06792,-3.25856 2.47791,-5.97541 5.73401,-6.11919zM22.9707,19c-0.54081,0.01585 -0.97094,0.45896 -0.9707,1v2h-2c-0.55228,0 -1,0.44772 -1,1c0,0.55228 0.44772,1 1,1h2v2c0,0.55228 0.44772,1 1,1c0.55228,0 1,-0.44772 1,-1v-2h2c0.55228,0 1,-0.44772 1,-1c0,-0.55228 -0.44772,-1 -1,-1h-2v-2c0.00012,-0.27037 -0.10925,-0.52927 -0.30317,-0.71767c-0.19392,-0.1884 -0.45587,-0.29025 -0.72612,-0.28233z"></path>
+                  </g>
+                </g>
+              </svg>
+              <span className="flex-1 ml-3 whitespace-nowrap">Lời mời kết bạn</span>
             </span>
           </li>
           <li>
@@ -214,7 +228,7 @@ export default function Sidebar() {
                   d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"
                   clipRule="evenodd"></path>
               </svg>
-              <span className="flex-1 ml-3 whitespace-nowrap">Profile</span>
+              <span className="flex-1 ml-3 whitespace-nowrap">Cá nhân</span>
             </span>
           </li>
           <li>
@@ -230,7 +244,7 @@ export default function Sidebar() {
                   d="M3 3a1 1 0 00-1 1v12a1 1 0 102 0V4a1 1 0 00-1-1zm10.293 9.293a1 1 0 001.414 1.414l3-3a1 1 0 000-1.414l-3-3a1 1 0 10-1.414 1.414L14.586 9H7a1 1 0 100 2h7.586l-1.293 1.293z"
                   clipRule="evenodd"></path>
               </svg>
-              <span className="flex-1 ml-3 whitespace-nowrap">Log Out</span>
+              <span className="flex-1 ml-3 whitespace-nowrap">Đăng xuất</span>
             </span>
           </li>
         </ul>

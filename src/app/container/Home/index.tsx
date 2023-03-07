@@ -1,22 +1,43 @@
+import { TAB_SIDE_BAR } from '@/app/config/app';
+import { selectTabSideBar } from '@/app/features/tabSideBar/tabSideBarSlice';
+import { useAppSelector } from '@/app/hooks';
 import Chat from '../Chat';
 import ChatList from '../ChatList';
+import Everyone from '../Everyone';
+import FriendList from '../FriendList';
+import FriendRequest from '../FriendRequest';
 import Header from '../Header';
 import Sidebar from '../Sidebar';
 
 export default function Home() {
+  const tab = useAppSelector(selectTabSideBar);
+  const haveChatScreen = [TAB_SIDE_BAR.CHAT, TAB_SIDE_BAR.FRIEND, TAB_SIDE_BAR.EVERYONE].includes(
+    tab
+  );
   return (
     <>
       <Header />
       <div className="flex flex-row max-h-screen">
-        <div className="basis-[10%]">
+        <div className="basis-[15%]">
           <Sidebar />
         </div>
-        <div className="basis-[21%]">
-          <ChatList />
-        </div>
-        <div className="basis-[69%]">
-          <Chat />
-        </div>
+        {tab === TAB_SIDE_BAR.FRIEND_REQUESTS && (
+          <div className="basis-[85%]">
+            <FriendRequest />
+          </div>
+        )}
+        {haveChatScreen && (
+          <>
+            <div className="basis-[21%]">
+              {tab === TAB_SIDE_BAR.CHAT && <ChatList />}
+              {tab === TAB_SIDE_BAR.FRIEND && <FriendList />}
+              {tab === TAB_SIDE_BAR.EVERYONE && <Everyone />}
+            </div>
+            <div className="basis-[64%]">
+              <Chat />
+            </div>
+          </>
+        )}
       </div>
     </>
   );

@@ -1,9 +1,9 @@
-import { changeToArr } from '../../../utils/helper';
+import { changeToArr } from '@/utils/helper';
 
 export default function ChatList() {
   return (
-    <div className="pb-6 flex flex-col h-screen border-r border-gray-200 sm:translate-x-0 dark:bg-gray-800 dark:border-gray-700 px-2 pt-16">
-      <div className="flex sm:items-center justify-between pb-4">
+    <div className="pb-6 flex flex-col h-screen border-r border-gray-200 sm:translate-x-0 dark:bg-gray-800 dark:border-gray-700 pt-16">
+      <div className="flex sm:items-center justify-between pb-4 px-2">
         <div className="text-2xl font-bold px-2 space-x-4 items-center justify-center ">
           <p>Chat</p>
         </div>
@@ -45,7 +45,7 @@ export default function ChatList() {
         </div>
       </div>
 
-      <form className="flex items-center">
+      <form className="flex items-center px-2">
         <label htmlFor="simple-search" className="sr-only">
           Search
         </label>
@@ -72,15 +72,13 @@ export default function ChatList() {
           />
         </div>
       </form>
-      <ul
-        role="list"
-        className="max-w-sm divide-y divide-gray-200 dark:divide-gray-700 overflow-y-scroll h-[100%]">
+      <ul role="list" className="overflow-y-scroll h-[100%] p-2">
         {changeToArr(15).map((val, index) => (
-          <li className="py-3 sm:py-4" key={val}>
+          <li className="py-3 sm:py-4 hover:bg-gray-100 rounded-lg pl-2 cursor-pointer" key={val}>
             <div className="flex items-center space-x-3">
               <div className="flex-shrink-0">
                 <img
-                  className="w-8 h-8 rounded-full"
+                  className="w-10 h-10 rounded-full"
                   src="/images/anhaoxanh.jpeg"
                   alt="Neil image"
                 />

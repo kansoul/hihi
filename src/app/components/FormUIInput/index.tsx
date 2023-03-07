@@ -1,20 +1,20 @@
-import { forwardRef, InputHTMLAttributes } from 'react'
+import { forwardRef, InputHTMLAttributes } from 'react';
 
 interface FormUIInputProps extends InputHTMLAttributes<HTMLInputElement> {
-  label?: string
-  name?: string
-  error?: any
-  fixedHeight?: boolean
-  customBorder?: string
+  label?: string;
+  name?: string;
+  error?: any;
+  fixedHeight?: boolean;
+  customBorder?: string;
 }
 
 /* eslint-disable @typescript-eslint/no-unused-vars */
 export const FormUIInput = forwardRef((props: FormUIInputProps, ref) => {
-  const { label, name, error, fixedHeight, customBorder, ...inputProps } = props
+  const { label, name, error, fixedHeight, customBorder, ...inputProps } = props;
 
   return (
-    <div className={`w-full ${error ? 'is-invalid' : ''}`}>
-      <label className="block text-sm font-medium text-gray-700" htmlFor={name}>
+    <div className={`w-full mb-4 ${error ? 'is-invalid' : ''}`}>
+      <label className="block text-[15px] font-medium text-gray-700" htmlFor={name}>
         {label}
       </label>
       <div className="mt-1">
@@ -31,19 +31,18 @@ export const FormUIInput = forwardRef((props: FormUIInputProps, ref) => {
             ) : (
               ' min-h-[20px]'
             )
-          }  `}
-        >
+          }  `}>
           {error?.message}
         </div>
       </div>
     </div>
-  )
-})
+  );
+});
 
 FormUIInput.defaultProps = {
   label: '',
   name: '',
   error: null,
   fixedHeight: true,
-  customBorder: '',
-}
+  customBorder: ''
+};
