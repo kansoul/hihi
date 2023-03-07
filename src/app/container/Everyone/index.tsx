@@ -1,6 +1,36 @@
+import { SEARCH_FRIEND } from '@/app/services/schemas/friend';
+import { UserFriendData } from '@/types/User';
 import { changeToArr } from '@/utils/helper';
+import { useLazyQuery } from '@apollo/client';
+import { useEffect, useState } from 'react';
+import UserSearchList from './components/UserSearchList';
 
 export default function Everyone() {
+  const [searchFriends, setSearchFriends] = useState<UserFriendData[] | null>(null);
+  const [searchKey, setSearchKey] = useState<string>('');
+
+  const [getListUsers] = useLazyQuery(SEARCH_FRIEND, {
+    variables: {
+      keySearch: searchKey
+    }
+  });
+
+  const handleSearch = async () => {
+    try {
+      const data = await getListUsers();
+      if (data?.loading) return;
+      if (data?.data) {
+        setSearchFriends(data?.data?.searchFriends);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    handleSearch();
+  }, [searchKey]);
+  console.log(searchFriends);
   return (
     <div className="pb-6 flex flex-col h-screen border-r border-gray-200 sm:translate-x-0 dark:bg-gray-800 dark:border-gray-700 pt-16">
       <div className="flex sm:items-center justify-between pb-4 px-2">
@@ -29,6 +59,8 @@ export default function Everyone() {
           </div>
           <input
             type="text"
+            onChange={(e) => setSearchKey(e?.target?.value)}
+            value={searchKey}
             id="simple-search"
             className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
             placeholder="Search"
@@ -37,30 +69,11 @@ export default function Everyone() {
         </div>
       </form>
       <ul role="list" className="p-2 overflow-y-scroll h-[100%] ">
-        {changeToArr(3).map((val, index) => (
-          <li className="py-3 sm:py-4 hover:bg-gray-100 rounded-lg pl-2 cursor-pointer" key={val}>
-            <div className="flex items-center space-x-3">
-              <div className="flex-shrink-0">
-                <div className="relative">
-                  <img
-                    className="w-10 h-10 rounded-full"
-                    src="/images/anhaoxanh.jpeg"
-                    alt="profile image"
-                  />
-                  <span
-                    className={`top-0 left-7 absolute  w-3.5 h-3.5 ${
-                      index % 2 === 0 ? 'bg-green-400' : 'bg-red-500'
-                    } border-2 border-white dark:border-gray-800 rounded-full`}></span>
-                </div>
-              </div>
-              <div className="flex-1 min-w-0">
-                <p className="text-[15px] font-semibold text-gray-900 truncate dark:text-white">
-                  Neil Sims
-                </p>
-              </div>
-            </div>
-          </li>
-        ))}
+        {searchFriends &&
+          searchFriends.length > 0 &&
+          searchFriends.map((searchFriend) => (
+            <UserSearchList searchFriend={searchFriend} key={searchFriend?.uid} />
+          ))}
       </ul>
     </div>
   );

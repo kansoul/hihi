@@ -23,3 +23,16 @@ export const GET_FRIEND = gql`
     }
   }
 `;
+
+export const SEARCH_FRIEND = gql`
+  query SearchFriends($keySearch: String) {
+    searchFriends(keySearch: $keySearch) {
+      uid
+      firstName
+      lastName
+      avatarUrl
+      email
+      active
+    }
+  }
+`;

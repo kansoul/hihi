@@ -1,6 +1,29 @@
-export default function ChatCard() {
+import Avatar from '@/app/components/Avatar';
+import { Friend } from '@/types/Friend';
+import { UserFriendData } from '@/types/User';
+
+export default function ChatCard(props: {
+  userInformation: UserFriendData | null;
+  friendData: Friend;
+}) {
   return (
     <>
+      <div className="w-full mx-auto max-w-sm bg-white rounded-lg">
+        <div className="flex justify-end px-4 pt-4"></div>
+        <div className="flex flex-col items-center pb-10">
+          <Avatar className="w-24 h-24 mb-3 rounded-full shadow-lg" imageUrl={''} />
+          <h5 className="mb-1 text-xl font-medium text-gray-900 dark:text-white">Bonnie Green</h5>
+          <span className="text-sm text-gray-500 dark:text-gray-400">Visual Designer</span>
+          <div className="flex mt-4 space-x-3 md:mt-6">
+            <a
+              href="#"
+              className="inline-flex items-center px-4 py-2 text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+              Add friend
+            </a>
+          </div>
+        </div>
+      </div>
+
       <div className="chat-message">
         <div className="flex items-end justify-end">
           <div className="flex flex-col space-y-2 text-xs max-w-xs mx-2 order-1 items-end">
