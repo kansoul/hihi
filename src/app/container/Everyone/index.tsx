@@ -5,7 +5,8 @@ import { useLazyQuery } from '@apollo/client';
 import { useEffect, useState } from 'react';
 import UserSearchList from './components/UserSearchList';
 
-export default function Everyone() {
+export default function Everyone(props: { setUidChoose: (value: string) => void }) {
+  const { setUidChoose } = props;
   const [searchFriends, setSearchFriends] = useState<UserFriendData[] | null>(null);
   const [searchKey, setSearchKey] = useState<string>('');
 
@@ -30,7 +31,6 @@ export default function Everyone() {
   useEffect(() => {
     handleSearch();
   }, [searchKey]);
-  console.log(searchFriends);
   return (
     <div className="pb-6 flex flex-col h-screen border-r border-gray-200 sm:translate-x-0 dark:bg-gray-800 dark:border-gray-700 pt-16">
       <div className="flex sm:items-center justify-between pb-4 px-2">
@@ -72,7 +72,11 @@ export default function Everyone() {
         {searchFriends &&
           searchFriends.length > 0 &&
           searchFriends.map((searchFriend) => (
-            <UserSearchList searchFriend={searchFriend} key={searchFriend?.uid} />
+            <UserSearchList
+              searchFriend={searchFriend}
+              key={searchFriend?.uid}
+              setUidChoose={setUidChoose}
+            />
           ))}
       </ul>
     </div>

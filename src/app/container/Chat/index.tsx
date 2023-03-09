@@ -1,10 +1,45 @@
+import { LoadingOverlay } from '@/app/components/LoadingOverlay/LoadingOverlay';
+import { GET_RELATION } from '@/app/services/schemas/friend';
+import { GET_FRIEND_INFORMATION } from '@/app/services/schemas/user';
+import { Friend } from '@/types/Friend';
+import { UserFriendData } from '@/types/User';
+import { useLazyQuery, useQuery } from '@apollo/client';
 import { useEffect, useRef, useState } from 'react';
 import ChatCard from './component/ChatCard';
 import './index.css';
 
-export default function Chat() {
+export default function Chat(props: { uidFriend: string }) {
+  const { uidFriend } = props;
   const [openSettingRoom, setOpenSettingRoom] = useState<boolean>(false);
+  const [friendData, setFriendData] = useState<Friend | null>(null);
+  const [userInformation, setUserInformation] = useState<UserFriendData | null>(null);
+  const [getFriendInformation] = useLazyQuery(GET_FRIEND_INFORMATION, {
+    variables: {
+      uid: uidFriend
+    }
+  });
+  const [getDataFriend] = useLazyQuery(GET_RELATION, {
+    variables: {
+      uidFriend: uidFriend
+    }
+  });
 
+  const handleSetFriendInformation = async () => {
+    const dataFriend = await getFriendInformation();
+    if (dataFriend && dataFriend?.data?.getUserFriend) {
+      // setFriendData(dataFriend?.data?.getRelation);
+      setUserInformation(dataFriend?.data?.getUserFriend);
+    }
+  };
+
+  const handleSetDataFriend = async () => {
+    if (userInformation) {
+      const dataFriend = await getDataFriend();
+      if (dataFriend && dataFriend?.data?.getRelation) {
+        setFriendData(dataFriend?.data?.getRelation);
+      } else setFriendData(null);
+    }
+  };
   const messagesEndRef = useRef<any>(null);
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ alignToTop: false });
@@ -12,7 +47,21 @@ export default function Chat() {
   useEffect(() => {
     scrollToBottom();
   }, []);
-  return (
+
+  useEffect(() => {
+    if (uidFriend) {
+      handleSetFriendInformation();
+    }
+  }, [uidFriend]);
+  useEffect(() => {
+    handleSetDataFriend();
+  }, [userInformation, uidFriend]);
+
+  console.log('userInformation', userInformation);
+  console.log('friendData', friendData);
+  console.log('uidFriend', uidFriend);
+
+  return userInformation ? (
     <div className="flex">
       <div
         className={`flex-1 justify-between flex flex-col h-screen pt-16 pb-3 px-3 ${
@@ -84,7 +133,7 @@ export default function Chat() {
         <div
           id="messages"
           className="flex flex-col space-y-4 p-3 overflow-y-auto scrollbar-thumb-blue scrollbar-thumb-rounded scrollbar-track-blue-lighter scrollbar-w-2 scrolling-touch h-full">
-          {/* <ChatCard /> */}
+          <ChatCard friendData={friendData} userInformation={userInformation} />
           <div ref={messagesEndRef} />
         </div>
 
@@ -215,9 +264,9 @@ export default function Chat() {
                     viewBox="0 0 20 20"
                     xmlns="http://www.w3.org/2000/svg">
                     <path
-                      fill-rule="evenodd"
+                      fillRule="evenodd"
                       d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-6-3a2 2 0 11-4 0 2 2 0 014 0zm-2 4a5 5 0 00-4.546 2.916A5.986 5.986 0 0010 16a5.986 5.986 0 004.546-2.084A5 5 0 0010 11z"
-                      clip-rule="evenodd"></path>
+                      clipRule="evenodd"></path>
                   </svg>
                   Profile
                 </button>
@@ -244,9 +293,9 @@ export default function Chat() {
                     viewBox="0 0 20 20"
                     xmlns="http://www.w3.org/2000/svg">
                     <path
-                      fill-rule="evenodd"
+                      fillRule="evenodd"
                       d="M5 3a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2V5a2 2 0 00-2-2H5zm0 2h10v7h-2l-1 2H8l-1-2H5V5z"
-                      clip-rule="evenodd"></path>
+                      clipRule="evenodd"></path>
                   </svg>
                   Messages
                 </button>
@@ -260,9 +309,9 @@ export default function Chat() {
                     viewBox="0 0 20 20"
                     xmlns="http://www.w3.org/2000/svg">
                     <path
-                      fill-rule="evenodd"
+                      fillRule="evenodd"
                       d="M2 9.5A3.5 3.5 0 005.5 13H9v2.586l-1.293-1.293a1 1 0 00-1.414 1.414l3 3a1 1 0 001.414 0l3-3a1 1 0 00-1.414-1.414L11 15.586V13h2.5a4.5 4.5 0 10-.616-8.958 4.002 4.002 0 10-7.753 1.977A3.5 3.5 0 002 9.5zm9 3.5H9V8a1 1 0 012 0v5z"
-                      clip-rule="evenodd"></path>
+                      clipRule="evenodd"></path>
                   </svg>
                   Download
                 </button>
@@ -272,5 +321,7 @@ export default function Chat() {
         </div>
       )}
     </div>
+  ) : (
+    <LoadingOverlay />
   );
 }

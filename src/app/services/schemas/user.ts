@@ -38,3 +38,16 @@ export const GET_USER = gql`
     }
   }
 `;
+
+export const GET_FRIEND_INFORMATION = gql`
+  query GetUserFriend($uid: String) {
+    getUserFriend(uid: $uid) {
+      uid
+      firstName
+      lastName
+      avatarUrl
+      email
+      active
+    }
+  }
+`;

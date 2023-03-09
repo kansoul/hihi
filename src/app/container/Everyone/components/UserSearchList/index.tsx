@@ -1,11 +1,14 @@
 import Avatar from '@/app/components/Avatar';
 import { UserFriendData } from '@/types/User';
 
-export default function UserSearchList(props: { searchFriend: UserFriendData }) {
-  const { searchFriend } = props;
+export default function UserSearchList(props: {
+  searchFriend: UserFriendData;
+  setUidChoose: (value: string) => void;
+}) {
+  const { searchFriend, setUidChoose } = props;
   return (
     <li className="py-3 sm:py-4 hover:bg-gray-100 rounded-lg pl-2 cursor-pointer">
-      <div className="flex items-center space-x-3">
+      <div className="flex items-center space-x-3" onClick={() => setUidChoose(searchFriend?.uid)}>
         <div className="flex-shrink-0">
           <div className="relative">
             <Avatar imageUrl={searchFriend.avatarUrl} />

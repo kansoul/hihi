@@ -1,6 +1,7 @@
 import { TAB_SIDE_BAR } from '@/app/config/app';
 import { selectTabSideBar } from '@/app/features/tabSideBar/tabSideBarSlice';
 import { useAppSelector } from '@/app/hooks';
+import { useState } from 'react';
 import Chat from '../Chat';
 import ChatList from '../ChatList';
 import Everyone from '../Everyone';
@@ -14,6 +15,7 @@ export default function Home() {
   const haveChatScreen = [TAB_SIDE_BAR.CHAT, TAB_SIDE_BAR.FRIEND, TAB_SIDE_BAR.EVERYONE].includes(
     tab
   );
+  const [uidChoose, setUidChoose] = useState<any>();
   return (
     <>
       <Header />
@@ -31,11 +33,13 @@ export default function Home() {
             <div className="basis-[21%]">
               {tab === TAB_SIDE_BAR.CHAT && <ChatList />}
               {tab === TAB_SIDE_BAR.FRIEND && <FriendList />}
-              {tab === TAB_SIDE_BAR.EVERYONE && <Everyone />}
+              {tab === TAB_SIDE_BAR.EVERYONE && <Everyone setUidChoose={setUidChoose} />}
             </div>
-            <div className="basis-[64%]">
-              <Chat />
-            </div>
+            {uidChoose && (
+              <div className="basis-[64%]">
+                <Chat uidFriend={uidChoose} />
+              </div>
+            )}
           </>
         )}
       </div>

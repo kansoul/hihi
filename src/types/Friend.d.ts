@@ -1,5 +1,5 @@
 export interface Friend {
-  _id: string;
+  id: string;
   relationships: string[];
   userRequest: string;
   messageHello: string;
